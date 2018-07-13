@@ -1,10 +1,10 @@
 settings = {
 
-    "aoibounds": (11.4869,48.1519,11.6222,48.2423),
-    "systems": ["URB",],
+    "aoifile": "https://gdh-data.ams3.digitaloceanspaces.com/palmaria.geojson",
+    "systems": ["URB","AG","IND","FOR","HYDRO"],
     "outputdirectory": "output",
     "workingdirectory": "working",
-    "corinedata": "MUNICH-CORINE.zip",
+    "corinedata": "Palmaria-CORINE.zip",
 }
 
 
