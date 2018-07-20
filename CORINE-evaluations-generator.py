@@ -82,22 +82,30 @@ class EvaluationBuilder():
 		self.systemname = systemname
 		self.clippedFile = 0
 		self.colorDict = {'red':self.redFeatures, 'yellow':self.yellowFeatures, 'green':self.greenFeatures}
-
+		self.addedFeatures = []
 	def processFile(self, color, corinefile,corinecodes):
 		curfeatures = self.colorDict[color]
 		cwd = os.getcwd()
-	
 		corinefile = os.path.join(cwd,config.settings['workingdirectory'], corinefile)
 		with fiona.open(corinefile) as source:
 			for feature in source: 
 				try: 
-					# print(corinecodes, type(feature['properties']['code_12']))
 					if int(feature['properties']['code_12']) in corinecodes:
-						
-						curfeatures.append(feature)		
+						curfeatures.append(feature)	
+						self.addedFeatures.append(int(feature['properties']['OBJECTID']))
 				except KeyError as ke:
 					pass
 		self.colorDict[color] = curfeatures
+
+	def unAddedAsYellow(self,corinefile):
+		cwd = os.getcwd()
+		corinefile = os.path.join(cwd,config.settings['workingdirectory'], corinefile)
+		with fiona.open(corinefile) as source:
+			for feature in source: 
+				if int(feature['properties']['OBJECTID']) in self.addedFeatures:
+					pass
+				else:
+					self.colorDict['yellow'].append(feature)
 
 
 	def writeEvaluationFile(self):
@@ -153,9 +161,9 @@ if __name__ == '__main__':
 
 	myFileDownloader = DataDownloader()
 	if isURL: 
-		corinefile = myFileDownloader.downloadFiles([corinedataurl])
+		corinefile = myFileDownloader.downloadFiles([corinedataurl])[0]
 	else: 
-		corinefile = myFileDownloader.readFile(corinedataurl)
+		corinefile = myFileDownloader.readFile(corinedataurl)[0]
 
 
 	# for system, processchain in config.processchains.iteritems():
@@ -164,7 +172,8 @@ if __name__ == '__main__':
 		print("Processing %s .." % system)
 		myEvaluationBuilder = EvaluationBuilder(system)
 		for evaluationcolor, corinecodes in processchain.items():
-			myEvaluationBuilder.processFile(evaluationcolor,corinefile[0],corinecodes)
+			myEvaluationBuilder.processFile(evaluationcolor,corinefile,corinecodes)
+		myEvaluationBuilder.unAddedAsYellow(corinefile)
 
 		myEvaluationBuilder.writeEvaluationFile()
 
