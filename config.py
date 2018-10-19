@@ -1,7 +1,7 @@
 settings = {
 
     "aoifile": "https://gdh-data.ams3.digitaloceanspaces.com/boundaries/camkox-purple.geojson",
-    "systems": ["AG"],
+    "systems": ["URB","AG","IND","FOR","HYDRO","EI","LDH","MIX"],
     "outputdirectory": "output",
     "workingdirectory": "working",
     "corinedata": "CORINE-lc.zip",
