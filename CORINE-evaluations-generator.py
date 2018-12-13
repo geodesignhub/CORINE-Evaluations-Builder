@@ -44,6 +44,7 @@ class DataDownloader():
 		cwd = os.getcwd()
 		workingdirectory = os.path.join(cwd,config.settings['workingdirectory'])
 		local_filename = os.path.join(workingdirectory, filename)	
+		
 		ext = os.path.splitext(local_filename)[1]
 		try:
 			assert os.path.exists(local_filename)
@@ -51,6 +52,8 @@ class DataDownloader():
 			print("Input file does not exist %s" % ae)
 		if ext == '.zip':
 			shapefilelist = self.unzipFile(local_filename)
+		else: 
+			shapefilelist = [local_filename]
 		return shapefilelist
 
 			
@@ -86,8 +89,9 @@ class EvaluationBuilder():
 	def processFile(self, color, corinefile,corinecodes):
 		curfeatures = self.colorDict[color]
 		cwd = os.getcwd()
+		
 		corinefile = os.path.join(cwd,config.settings['workingdirectory'], corinefile)
-		with fiona.open(corinefile) as source:
+		with fiona.open(corinefile, driver="GPKG") as source:
 			for feature in source: 
 				try: 
 					if int(feature['properties']['code_12']) in corinecodes:
