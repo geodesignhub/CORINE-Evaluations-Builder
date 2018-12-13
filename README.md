@@ -27,12 +27,11 @@ pip install requirements.txt
 **1. Download raw data**
 
 1. Go to [Copernicus portal](https://land.copernicus.eu/) to order and download the CORINE vector data and clip it to your area of interest.
-2. Put this file in the ```working``` folder
-3. Update the ```config.py``` file to show 
+2. Save the clipped layer as a GeoPackage and put it in the ```working``` folder in the directory, create one if you dont have it. 
 
 **2. Update config.py**
 
-1. Set the boundary parameter to set the bounding box co-ordinates in `(southwest_lng,southwest_lat,northeast_lng,northeast_lat)` format. 
+1. Update the config file to point to the AOI file and the CORINE file using the correct filename. 
 
 **3. Upload Evaluations**
 
