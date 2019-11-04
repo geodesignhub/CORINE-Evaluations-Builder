@@ -68,8 +68,7 @@ class DataDownloader():
 		for name in z.namelist():
 			basename= os.path.basename(name)
 			filename, file_extension = os.path.splitext(basename)
-			if file_extension == '.shp' and 'MACOSX' not in name:
-
+			if file_extension == '.gpkg' and 'MACOSX' not in name:
 				shapefilelist.append(name)
 			z.extract(name, workingdirectory)
 		fh.close()
@@ -94,9 +93,9 @@ class EvaluationBuilder():
 		with fiona.open(corinefile, driver="GPKG") as source:
 			for feature in source: 
 				try: 
-					if int(feature['properties']['code_12']) in corinecodes:
+					if int(feature['properties']['DN']) in corinecodes:
 						curfeatures.append(feature)	
-						self.addedFeatures.append(int(feature['properties']['OBJECTID']))
+						self.addedFeatures.append(int(feature['properties']['ID']))
 				except KeyError as ke:
 					pass
 		self.colorDict[color] = curfeatures
@@ -106,7 +105,7 @@ class EvaluationBuilder():
 		corinefile = os.path.join(cwd,config.settings['workingdirectory'], corinefile)
 		with fiona.open(corinefile) as source:
 			for feature in source: 
-				if int(feature['properties']['OBJECTID']) in self.addedFeatures:
+				if int(feature['properties']['ID']) in self.addedFeatures:
 					pass
 				else:
 					self.colorDict['yellow'].append(feature)
@@ -164,11 +163,11 @@ if __name__ == '__main__':
 	isURL = re.match(regex, corinedataurl) is not None
 
 	myFileDownloader = DataDownloader()
+	
 	if isURL: 
 		corinefile = myFileDownloader.downloadFiles([corinedataurl])[0]
 	else: 
 		corinefile = myFileDownloader.readFile(corinedataurl)[0]
-
 
 	# for system, processchain in config.processchains.iteritems():
 	for system in systems: 
@@ -183,5 +182,3 @@ if __name__ == '__main__':
 
 	
 	# myEvaluationBuilder.cleanDirectories()
-
-
